@@ -1,5 +1,7 @@
+import argparse
 import time
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from notification_utils import send_email_via_sendgrid
 from selenium_utils import SeleniumUtils
 
@@ -43,11 +45,22 @@ def check_appointment_availability(driver):
             send_email_via_sendgrid()
 
 
-# Main execution
-driver = webdriver.Chrome()
-try:
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run Selenium in headless mode.")
+    parser.add_argument(
+        "--headless", action="store_true", help="Run the script in headless mode"
+    )
+    args = parser.parse_args()
+
+    chrome_options = Options()
+    if args.headless:
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("window-size=1920x1080")
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+    # Your existing logic to navigate and check appointment availability
     navigate_to_appointment_page(driver)
     check_appointment_availability(driver)
-
-finally:
     driver.quit()
