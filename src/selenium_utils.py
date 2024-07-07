@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 class SeleniumUtils:
@@ -49,6 +50,15 @@ class SeleniumUtils:
 
     def reject_cookies_by_id(self, cookie_id, timeout=10):
         """
-        Specialized method for rejecting cookies by ID.
+        Specialized method for rejecting cookies by ID, only if the cookie element exists.
         """
-        self.click_element("id", cookie_id, timeout)
+        try:
+            cookie_element = WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located((By.ID, cookie_id))
+            )
+            if cookie_element:
+                cookie_element.click()
+        except TimeoutException:
+            print(
+                f"Cookie element with ID '{cookie_id}' not found within {timeout} seconds."
+            )

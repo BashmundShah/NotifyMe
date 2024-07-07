@@ -36,7 +36,7 @@ async def check_appointment_availability(driver):
             "text", "Kein freier Termin verfügbar"
         )
         if no_appointment_element:
-            wait_interval = 5
+            wait_interval = 30
             print(
                 f"No appointment available. Checking again in {wait_interval} seconds..."
             )
