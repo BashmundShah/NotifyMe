@@ -11,8 +11,8 @@ def navigate_to_appointment_page(driver):
     driver.get("https://termine.staedteregion-aachen.de/auslaenderamt/")
 
     # Navigation
-    utils.click_element("text", "Aufenthaltsangelegenheiten")
     utils.reject_cookies_by_id("cookie_msg_btn_no")
+    utils.click_element("text", "Aufenthaltsangelegenheiten")
     utils.click_element(
         "xpath", "//h3[contains(text(), 'Aufenthalt')]/ancestor::div[1]"
     )
@@ -56,10 +56,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     chrome_options = Options()
+
     if args.headless:
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("window-size=1920x1080")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
 
     driver = webdriver.Chrome(options=chrome_options)
 
