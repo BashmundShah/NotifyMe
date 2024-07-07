@@ -2,6 +2,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import os
 from dotenv import load_dotenv
+import telegram
 
 # Load environment variables from .env file
 load_dotenv()
@@ -9,6 +10,8 @@ load_dotenv()
 # Access the API key
 sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
 from_email = os.getenv("FROM_EMAIL")
+chat_id = os.getenv("TELEGRAM_CHAT_ID")
+bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
 
 default_to_emails = ["bashmundkhan@yahoo.com", "mariyahassan.akhter@gmail.com"]
 default_subject = "Appointment is available! - NotifyMe"
@@ -42,3 +45,17 @@ def send_email_via_sendgrid(
         print(f"Email sent. Status code: {response.status_code}")
     except Exception as e:
         print(f"Failed to send email: {e}")
+
+
+async def send_telegram_message():
+    """
+    Sends a message to a Telegram chat using a bot.
+
+    Parameters:
+    - chat_id (str): The chat ID where the message will be sent.
+    - message (str): The message to send.
+    - bot_token (str, optional): The Telegram bot token. If not provided, it will be read from the TELEGRAM_BOT_TOKEN environment variable.
+    """
+
+    bot = telegram.Bot(token=bot_token)
+    await bot.send_message(chat_id=chat_id, text=default_content)

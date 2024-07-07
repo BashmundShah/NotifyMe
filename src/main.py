@@ -1,8 +1,8 @@
 import argparse
-import time
+import asyncio
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from notification_utils import send_email_via_sendgrid
+from notification_utils import send_email_via_sendgrid, send_telegram_message
 from selenium_utils import SeleniumUtils
 
 
@@ -28,20 +28,23 @@ def navigate_to_appointment_page(driver):
     )
 
 
-def check_appointment_availability(driver):
+async def check_appointment_availability(driver):
     utils = SeleniumUtils(driver)
+
     while True:
-        # Assuming find_element returns None if no element is found
         no_appointment_element = utils.find_element(
             "text", "Kein freier Termin verfügbar"
         )
         if no_appointment_element:
-            print("No appointment available. Checking again in 5 seconds...")
-            time.sleep(5)
+            wait_interval = 5
+            print(
+                f"No appointment available. Checking again in {wait_interval} seconds..."
+            )
+            await asyncio.sleep(wait_interval)  # Use asyncio.sleep for async sleep
             driver.refresh()
-
         else:
             print("Appointment available.")
+            await send_telegram_message()
             send_email_via_sendgrid()
 
 
@@ -60,7 +63,12 @@ if __name__ == "__main__":
 
     driver = webdriver.Chrome(options=chrome_options)
 
-    # Your existing logic to navigate and check appointment availability
+    # Use asyncio event loop to run async functions
     navigate_to_appointment_page(driver)
-    check_appointment_availability(driver)
+    asyncio.run(check_appointment_availability(driver))
+
+    send_email_via_sendgrid(
+        subject="Script has finished running",
+        content="The script has finished running. Please check the output for details.",
+    )
     driver.quit()
