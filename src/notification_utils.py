@@ -19,9 +19,9 @@ default_content = "An appointment is available at the Ausländeramt Aachen Team-
 
 
 def send_email_via_sendgrid(
+    content=default_content,
     to_emails=default_to_emails,
     subject=default_subject,
-    content=default_content,
 ):
     """
     Sends an email using SendGrid.
@@ -47,7 +47,7 @@ def send_email_via_sendgrid(
         print(f"Failed to send email: {e}")
 
 
-async def send_telegram_message():
+async def send_telegram_message(message=default_content):
     """
     Sends a message to a Telegram chat using a bot.
 
@@ -58,4 +58,4 @@ async def send_telegram_message():
     """
 
     bot = telegram.Bot(token=bot_token)
-    await bot.send_message(chat_id=chat_id, text=default_content)
+    await bot.send_message(chat_id=chat_id, text=message)
