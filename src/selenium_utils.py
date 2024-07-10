@@ -65,7 +65,7 @@ class SeleniumUtils:
         """
         try:
             cookie_element = self.find_element("id", cookie_id)
-            if cookie_element.is_displayed():
+            if cookie_element:
                 cookie_element.click()
         except TimeoutException:
             print(f"Cookie element with ID '{cookie_id}' not found.")
